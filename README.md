@@ -94,35 +94,40 @@ Al no llevar parámetros (como -p port o -i file), significa que estas opciones 
 -vvv → aún más detallado (debug).
 
 
-Dónde se almacenan y cómo se buscan las man pages
+### Dónde se almacenan y cómo se buscan las man pages
+
 En Linux, las páginas del manual se distribuyen por secciones (1, 2, 3, …) en rutas conocidas. 
 
 Lo más habitual:
 
-/usr/share/man/ → man pages instaladas por el sistema.
+- /usr/share/man/ → man pages instaladas por el sistema.
 
+- /usr/local/share/man/ → man pages instaladas localmente por el administrador (prioridad sobre /usr).
 
-/usr/local/share/man/ → man pages instaladas localmente por el administrador (prioridad sobre /usr).
+- /opt/<paquete>/share/man → algunos paquetes autoinstalados guardan ahí su documentación.
 
+- /var/cache/man/ → cat pages (páginas preformateadas en caché) e índices.
 
-/opt/<paquete>/share/man → algunos paquetes autoinstalados guardan ahí su documentación.
-
-
-/var/cache/man/ → cat pages (páginas preformateadas en caché) e índices.
-La variable MANPATH (y el fichero de configuración de man) dictan en qué árboles buscar y en qué orden.
+### La variable MANPATH (y el fichero de configuración de man) dictan en qué árboles buscar y en qué orden.
 
 Ver tu ruta efectiva:
+
 manpath
 
-Inspeccionar dónde está una página concreta:
-man -w ssh     # primera encontrada
-man -aw ssh    # muestra todas las rutas donde existe
+### Inspeccionar dónde está una página concreta:
+-  man -w ssh     # primera encontrada
+- man -aw ssh    # muestra todas las rutas donde existe
 
 
-Crear tus propias man pages
+### Crear tus propias man pages
+
 Estructura básica del archivo
+
 Una man page es un archivo de texto escrito en troff/groff con macros específicas.
- El formato es:
+
+El formato es:
+
+```
 .TH NOMBRE SECCIÓN "FECHA" "VERSIÓN" "AUTOR/EMPRESA"
 .SH NAME
 nombre \- breve descripción
@@ -137,21 +142,33 @@ explicación detallada
 Ejemplos de uso reales
 .SH SEE ALSO
 otros comandos relacionados
+```
 
 Ubicación y nombre del archivo
-Nombre: comando.sección → ej: mi-tool.1
-/usr/local/share/man/man1/   → comandos de usuario
+
+- Nombre: comando.sección → ej: mi-tool.1
+- /usr/local/share/man/man1/   → comandos de usuario
+
 Comprimir la página
+
 Todas las man pages suelen guardarse comprimidas:
+
 gzip -9 /usr/local/share/man/man1/mi-tool.1
+
 Esto genera: /usr/local/share/man/man1/mi-tool.1.gz
+
 Actualizar la base de datos de man
+
 Para que man reconozca tu página:
+
 sudo mandb -q /usr/local/share/man
 
 Probar tu man page
+
 man mi-tool
+
 Y si quieres ver todas las ubicaciones donde se encuentra:
+
 man -aw mi-tool
 
 Alternativa moderna: escribir en Markdown
