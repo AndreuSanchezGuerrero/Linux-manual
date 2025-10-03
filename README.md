@@ -144,33 +144,29 @@ Ejemplos de uso reales
 otros comandos relacionados
 ```
 
-Ubicación y nombre del archivo
+### Ubicación
 
+- /usr/local/share/man/man1/
+
+### Nombre del archivo
 - Nombre: comando.sección → ej: mi-tool.1
-- /usr/local/share/man/man1/   → comandos de usuario
 
-Comprimir la página
-
-Todas las man pages suelen guardarse comprimidas:
+### Comprimir la página
 
 gzip -9 /usr/local/share/man/man1/mi-tool.1
 
 Esto genera: /usr/local/share/man/man1/mi-tool.1.gz
 
-Actualizar la base de datos de man
+### Actualizar la base de datos de man
 
 Para que man reconozca tu página:
 
 sudo mandb -q /usr/local/share/man
 
-Probar tu man page
+### Probar tu man page
 
 man mi-tool
 
-Y si quieres ver todas las ubicaciones donde se encuentra:
+### Y si quieres ver todas las ubicaciones donde se encuentra:
 
 man -aw mi-tool
-
-Alternativa moderna: escribir en Markdown
-Si prefieres escribir más cómodo, puedes redactar en Markdown y convertirlo a formato man con herramientas como ronn o pandoc:
-pandoc -s -t man mi-tool.md -o mi-tool.1
