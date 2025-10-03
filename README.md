@@ -6,6 +6,8 @@ Guía completa de sistemas y servicios clave de Linux, comandos útiles y ejempl
 
 - Incluye un apartado especial sobre el kernel de Linux para entender su funcionamiento y configuración. Modificaremos parámetros del kernel y compilaremos uno personalizado . 
 
+<br><br>
+
 # Distribuciones de Linux en entornos empresariales
 
 En el ecosistema Linux existen cientos de distribuciones, pero en la práctica solo unas pocas dominan el ámbito empresarial. En ámbito empresarial la elección no suele depender de preferencias personales, sino de factores como estabilidad, soporte a largo plazo, seguridad y ecosistema de herramientas.
@@ -25,6 +27,61 @@ Al elegir, lo importante no son gustos, sino estabilidad, soporte y seguridad. P
 - ¿Existe buena documentación y ecosistema de herramientas?
 - ¿Cuánto cuesta mantenerla (soporte, formación, licencias)?
 - ¿Equilibra estabilidad con flexibilidad para nuevas tecnologías?
+
+<br><br>
+
+# Tipos de comandos en Linux con `compgen`
+
+Si en la terminal pulsas TAB dos veces, verás una lista enorme de comandos disponibles. Pero, ¿sabías que existen diferentes tipos de comandos en Linux?
+
+En Bash, el comando interno `compgen` permite listar los diferentes tipos de comandos que existen en el sistema:
+
+## 1. Comandos internos (built-ins)
+
+Son los comandos que **viven dentro de la shell** y no existen como binarios separados.
+
+Ver todos los builtins:
+
+```bash
+compgen -b
+```
+
+## 2. Comandos externos (binarios en $PATH)
+
+Son los ejecutables del sistema almacenados en rutas como /bin, /usr/bin, /usr/local/bin.
+
+```bash
+compgen -c
+```
+
+> Nota: compgen -c muestra todos los comandos ejecutables (incluye builtins, alias y funciones).
+
+Para ver únicamente los binarios, puedes filtrarlos con type:
+
+```bash
+compgen -c | while read cmd; do type "$cmd" | grep -q 'file' && echo "$cmd"; done
+```
+
+## 3. Alias
+
+Son atajos definidos en la shell (por ti o por configuración del sistema).
+
+Ver todos los alias:
+
+```bash
+compgen -a
+```
+
+Para ver los alias definidos en tu sistema, puedes usar el comando `alias` sin argumentos.
+
+---
+
+> **Lectura recomendada**: 
+> [Entendiendo el comando compgen](https://fraterneo.blogspot.com/2012/07/entendiendo-el-comando-compgen.html)
+
+---
+
+<br><br>
 
 # El comando MAN
 
@@ -128,6 +185,7 @@ manpath
 -  man -w ssh     # primera encontrada
 - man -aw ssh    # muestra todas las rutas donde existe
 
+<br><br>
 
 # Crear tus propias man pages
 
@@ -188,3 +246,8 @@ man -aw mi-tool
 > [Linux man page guide - It’s FOSS](https://itsfoss.com/linux-man-page-guide)
 
 ---
+
+<br> <br>
+
+
+
