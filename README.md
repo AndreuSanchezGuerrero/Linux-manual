@@ -114,11 +114,8 @@ En Linux, las páginas del manual se distribuyen por secciones (1, 2, 3, …) en
 Lo más habitual:
 
 - /usr/share/man/ → man pages instaladas por el sistema.
-
 - /usr/local/share/man/ → man pages instaladas localmente por el administrador (prioridad sobre /usr).
-
 - /opt/<paquete>/share/man → algunos paquetes autoinstalados guardan ahí su documentación.
-
 - /var/cache/man/ → cat pages (páginas preformateadas en caché) e índices.
 
 ### La variable MANPATH (y el fichero de configuración de man) dictan en qué árboles buscar y en qué orden.
@@ -132,7 +129,7 @@ manpath
 - man -aw ssh    # muestra todas las rutas donde existe
 
 
-### Crear tus propias man pages
+# Crear tus propias man pages
 
 Estructura básica del archivo
 
@@ -185,5 +182,9 @@ man mi-tool
 
 man -aw mi-tool
 
+---
+
 > **Lectura recomendada**: 
 > [Linux man page guide - It’s FOSS](https://itsfoss.com/linux-man-page-guide)
+
+---
