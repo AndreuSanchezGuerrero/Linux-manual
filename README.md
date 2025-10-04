@@ -249,5 +249,126 @@ man -aw mi-tool
 
 <br> <br>
 
+# Navegación por el sistema de archivos
+
+## Entendiendo la jerarquía de directorios
+
+La jerarquía de directorios en Linux se basa en un sistema de archivos en forma de árbol. Aquí hay algunos de los directorios más importantes que encontrarás:
+
+- `/` : El directorio raíz, donde empieza la jerarquía de archivos.
+- `/bin` : Ejecutables esenciales para el sistema.
+- `/sbin` : Ejecutables del sistema, generalmente para administración.
+- `/usr` : Históricamente: “Unix System Resources”, no “user”. Es la jerarquía principal de software del sistema (binarios, librerías, documentación...). Por ejemplo, `/usr/bin` a diferencia de `/bin`, contiene aplicaciones y utilidades adicionales no esenciales para el arranque.
+- `/usr/local` : Software instalado localmente, fuera del gestor de paquetes del sistema.
+- `/etc` : Archivos de configuración del sistema.
+- `/home` : Contiene los directorios personales de los usuarios.
+- `/var` : Datos variables: logs, bases de datos temporales.
+- `/tmp` : Archivos temporales, se suelen borrar al reiniciar.
+- `/dev` : Archivos de dispositivos (hardware).
+- `/proc` : Sistema de archivos virtual que proporciona información sobre procesos y el sistema.
+- `/sys` : Sistema de archivos virtual que expone información del kernel y dispositivos.
+- `/mnt` : Punto de montaje temporal para sistemas de archivos.
+- `/media` : Punto de montaje para medios extraíbles (USB, CD-ROM).
+- `/lib` : Bibliotecas compartidas necesarias para ejecutar programas.
+- `/opt` : Software adicional y paquetes de terceros.
+- `/root` : Directorio personal del usuario root (administrador).
+
+Para ver la estructura completa, puedes usar el comando `tree`. 
+
+El comando tree muestra el contenido de un directorio en forma de árbol jerárquico, lo que permite visualizar fácilmente la estructura de carpetas y subcarpetas.
+
+Si no tienes `tree` instalado, puedes instalarlo con:
+
+En Debian/Ubuntu:
+
+```bash
+sudo apt install tree
+```
+
+En RHEL/CentOS:
+
+```bash
+sudo yum install tree
+```
+
+```bash
+tree -L 2 /
+```
+
+El parámetro `-L 2` limita la profundidad del árbol a 2 niveles, para evitar una salida demasiado larga. La / indica que quieres ver la estructura desde el directorio raíz.
 
 
+## Comandos de movimiento y ubicación
+
+Para moverte por el sistema de archivos y orientarte dentro de él, Linux ofrece varios comandos básicos pero muy potentes. Dominar estos comandos es esencial para trabajar de forma fluida desde la terminal.
+
+### pwd — Print Working Directory
+
+- Muestra la ruta completa del directorio actual.
+
+### cd — Change Directory
+
+- Cambia al directorio especificado.
+- Existen dos formas de especificar rutas: absolutas y relativas.
+- Ejemplos de ruta absoluta:
+  - `cd /home/usuario/documentos` → Ir a documentos.
+- Para las rutas relativas existen varios atajos:
+  - `cd ..` → Sube un nivel (al directorio padre).
+  - `cd ../..` → Sube dos niveles. Puedes combinar tantos `..` como necesites.
+  - `cd ./` → Permanece en el directorio actual.
+  - `cd -` → Vuelve al directorio anterior.
+  - `cd` o `cd ~` → Va al directorio home del usuario actual.
+  - `cd ~usuario` → Va al home de otro usuario (requiere permisos).
+  - `cd /` → Va al directorio raíz.
+
+### ls — List Directory Contents
+
+- Muestra el contenido del directorio actual o de uno especificado.
+- Ejemplos de uso:
+  - `ls` → Lista los archivos y carpetas en el directorio actual.
+  - `ls -a` → Muestra todos los archivos, incluidos los ocultos (que empiezan con .).
+  - `ls -l` → Muestra una lista detallada (permisos, propietario, tamaño, fecha).
+  - `ls -lah` → Muestra una lista detallada con tamaños legibles por humanos (ej. 1K, 234M, 2G).
+  - `ls -R` → Lista los archivos y carpetas de forma recursiva.
+
+# Visualización de ficheros
+
+Objetivo: aprender a leer información sin modificarla, inspeccionar archivos de configuración, analizar logs y combinar herramientas de lectura con filtros como grep, sort o uniq.
+
+Antes de manipular archivos, es fundamental saber cómo leerlos e interpretarlos correctamente. Linux ofrece varios comandos para este propósito. También necesitamos saber que son los logs y dónde encontrarlos.
+
+Los logs son archivos donde el sistema y las aplicaciones registran eventos, errores y actividades. Son esenciales para diagnosticar problemas y entender el comportamiento del sistema.
+
+### Comandos básicos
+
+- `cat` → Muestra el contenido de un archivo.
+  - -n → Numera las líneas.
+  - -E → Muestra los finales de línea con $ (útil para ver saltos).
+  - -s → Suprime líneas en blanco repetidas.
+- `more` → Muestra el contenido de un archivo página por página.
+- `less` → less es el visor de texto estándar en Linux. Permite desplazarse, buscar y moverse libremente sin cargar todo el archivo en memoria.
+  - Navegación:
+    - Barra espaciadora → Avanza una página.
+    - b → Retrocede una página.
+    - Enter → Avanza una línea.
+    - ↓ → Desplazarse hacia abajo.
+    - ↑ → Desplazarse hacia arriba.
+    - /texto → Busca "texto" hacia adelante.
+    - ?texto → Busca "texto" hacia atrás.
+    - n → Repite la búsqueda en la misma dirección.
+    - N → Repite la búsqueda en la dirección opuesta.
+    - g → Va al principio del archivo.
+    - G → Va al final del archivo.
+    - q → Sale de less. 
+- `head` → Muestra las primeras líneas de un archivo.
+  - -n N → Muestra las primeras N líneas (por defecto 10). 
+- `tail` → Muestra las últimas líneas de un archivo.
+  - -n N → Muestra las últimas N líneas (por defecto 10).
+  - -f → Sigue mostrando nuevas líneas en tiempo real (útil para logs). Significa "follow".
+- `nl` → Numera las líneas de un archivo. Similar a `cat -n`, pero con más opciones de formato.
+- `wc` → Cuenta líneas, palabras y bytes en un archivo.
+  -  Salida: líneas, palabras, bytes y nombre del archivo.
+  -  -l → Solo cuenta líneas.
+  -  -w → Solo cuenta palabras.
+  -  -c → Solo cuenta bytes.
+- `strings` → Extrae cadenas de texto legibles de archivos binarios.
