@@ -249,11 +249,11 @@ man -aw mi-tool
 
 <br> <br>
 
-# Navegación por el sistema de archivos
+# Navegación por el filesystem
 
 ## Entendiendo la jerarquía de directorios
 
-La jerarquía de directorios en Linux se basa en un sistema de archivos en forma de árbol. Aquí hay algunos de los directorios más importantes que encontrarás:
+La jerarquía de directorios en Linux se basa en un filesystem en forma de árbol. Aquí hay algunos de los directorios más importantes que encontrarás:
 
 - `/` : El directorio raíz, donde empieza la jerarquía de archivos.
 - `/bin` : Ejecutables esenciales para el sistema.
@@ -265,8 +265,8 @@ La jerarquía de directorios en Linux se basa en un sistema de archivos en forma
 - `/var` : Datos variables: logs, bases de datos temporales.
 - `/tmp` : Archivos temporales, se suelen borrar al reiniciar.
 - `/dev` : Archivos de dispositivos (hardware).
-- `/proc` : Sistema de archivos virtual que proporciona información sobre procesos y el sistema.
-- `/sys` : Sistema de archivos virtual que expone información del kernel y dispositivos.
+- `/proc` : filesystem virtual que proporciona información sobre procesos y el sistema.
+- `/sys` : filesystem virtual que expone información del kernel y dispositivos.
 - `/mnt` : Punto de montaje temporal para sistemas de archivos.
 - `/media` : Punto de montaje para medios extraíbles (USB, CD-ROM).
 - `/lib` : Bibliotecas compartidas necesarias para ejecutar programas.
@@ -300,7 +300,7 @@ El parámetro `-L 2` limita la profundidad del árbol a 2 niveles, para evitar u
 
 ## Comandos de movimiento y ubicación
 
-Para moverte por el sistema de archivos y orientarte dentro de él, Linux ofrece varios comandos básicos pero muy potentes. Dominar estos comandos es esencial para trabajar de forma fluida desde la terminal.
+Para moverte por el filesystem y orientarte dentro de él, Linux ofrece varios comandos básicos pero muy potentes. Dominar estos comandos es esencial para trabajar de forma fluida desde la terminal.
 
 ### pwd — Print Working Directory
 
@@ -415,6 +415,8 @@ Un filtro es un comando que lee datos de la entrada estándar (stdin), los proce
   - -r → Busca recursivamente en directorios.
   - -E → Usa expresiones regulares extendidas.
   - -c → Cuenta las líneas que coinciden.
+  - -n → Muestra el número de línea junto a la coincidencia.
+  - -H → Muestra el nombre del archivo junto a la coincidencia.
 - `sort` → Ordena líneas de texto.
   - -n → Ordena numéricamente.
   - -r → Ordena en orden inverso.
@@ -455,6 +457,7 @@ Un filtro es un comando que lee datos de la entrada estándar (stdin), los proce
   ```bash
   grep -vE "^#" /etc/passwd
   ```
+
 - Excluir líneas vacías:
 
   ```bash
@@ -465,6 +468,12 @@ Un filtro es un comando que lee datos de la entrada estándar (stdin), los proce
 
   ```bash
   grep -vE "^\s*#|^\s*$" /etc/passwd
+  ```
+
+- Buscar archivos que contengan una palabra en un directorio y sus subdirectorios:
+
+  ```bash
+  grep "palabra" -nH /ruta/del/directorio
   ```
 
 ### Ejemplos prácticos con combinaciones: lectura + filtros
@@ -494,3 +503,536 @@ Para combinar comandos y filtros, usamos el operador pipe `|`, que redirige la s
   ```bash
   cat /var/log/syslog | grep -E "error|fail|warning" | sort | uniq -c | sort
   ```
+
+  <br><br>
+  
+# Rutas en Linux
+
+Entender el concepto de rutas es fundamental para navegar y trabajar eficientemente en Linux. Una ruta define la ubicación exacta de un archivo o directorio dentro del sistema de archivos.
+
+## Tipos de rutas
+
+### Rutas absolutas
+
+Una **ruta absoluta** especifica la ubicación completa desde el directorio raíz (`/`). Siempre comienzan con `/` y proporcionan la ubicación exacta sin importar desde dónde las ejecutes.
+
+**Características:**
+- Siempre empiezan con `/`
+- Son inequívocas: siempre apuntan al mismo lugar
+- Funcionan desde cualquier directorio de trabajo
+
+**Ejemplos:**
+```bash
+/home/usuario/documentos/archivo.txt
+/etc/passwd
+/usr/bin/vim
+/var/log/syslog
+```
+
+### Rutas relativas
+
+Una **ruta relativa** especifica la ubicación en relación al directorio actual de trabajo. No comienzan con `/` y su resultado depende de tu ubicación actual.
+
+**Características:**
+
+- No empiezan con `/`
+- Su resultado depende del directorio actual (`pwd`)
+- Son más cortas pero pueden ser ambiguas
+
+**Ejemplos:**
+
+```bash
+documentos/archivo.txt        # del directorio actual a un fichero en documentos/
+../otracarpeta/archivo.txt    # subir un nivel, luego entrar en otracarpeta/
+./script.sh                   # archivo en el directorio actual
+```
+
+## Símbolos especiales en rutas
+
+### El punto (.)
+
+- `.` → Representa el **directorio actual**
+- `./archivo` → archivo en el directorio actual
+- `./script.sh` → ejecutar script en directorio actual
+
+### Dos puntos (..)
+
+- `..` → Representa el **directorio padre** (un nivel arriba)
+- `../archivo` → archivo en el directorio padre
+- `../../archivo` → archivo dos niveles arriba
+- `../hermano/archivo` → subir un nivel, entrar en carpeta hermano
+
+### La virgulilla (~)
+
+- `~` → Representa el **directorio home** del usuario actual
+- `~/documentos` → equivale a `/home/usuario/documentos`
+- `~usuario` → directorio home de otro usuario
+- `~root` → directorio home del usuario root (`/root`)
+
+### El guión (-)
+
+- `-` → En `cd`, representa el **directorio anterior**
+- `cd -` → vuelve al directorio donde estabas antes
+
+## Consejos prácticos
+
+### Autocompletado con TAB
+
+- Pulsa `TAB` para autocompletar rutas
+- Pulsa `TAB` dos veces para ver opciones disponibles
+
+### Verificar tu ubicación
+
+```bash
+pwd                      # mostrar directorio actual
+ls -la                   # ver contenido detallado del directorio actual
+```
+
+### Rutas con espacios
+
+Cuando una ruta contiene espacios, debes escaparla:
+```bash
+cd "Mi Carpeta Con Espacios"
+cd My\ Folder\ With\ Spaces
+cd 'Otra Carpeta'
+```
+
+### Historial de directorios
+
+```bash
+cd -                     # volver al directorio anterior
+dirs                     # ver pila de directorios (si usas pushd/popd)
+```
+
+## Variables de entorno relacionadas
+
+- `$HOME` → ruta del directorio home del usuario actual
+- `$PWD` → directorio actual de trabajo
+- `$OLDPWD` → directorio anterior
+
+```bash
+echo $HOME               # mostrar tu directorio home
+echo $PWD                # mostrar directorio actual
+cd $OLDPWD              # ir al directorio anterior (como cd -)
+```
+
+<br><br>
+
+# Manipulación del sistema del filesystem
+
+Aprender a crear, copiar, mover, renombrar, enlazar, borrar y gestionar permisos/propietarios de archivos y directorios de forma segura y eficiente.
+
+## Comandos básicos para crear.
+
+- `mkdir` → Crea nuevos directorios.
+  - `mkdir nuevo_directorio` → Crea un directorio.
+  - `mkdir -p /ruta/completa/nuevo_directorio` → Crea directorios padres si no existen (parents).
+  - `mkdir -v` → Muestra los directorios a medida que se crean (verbose).
+- `touch` → Crea archivos vacíos o actualiza timestamps.
+  - `touch archivo.txt` → Crea archivo.txt o actualiza su timestamp si ya existe.
+  - `touch -c archivo.txt` → No crea el archivo si no existe (no clobber). Si el archivo ya existe, touch actualiza sus timestamps (como siempre). Si el archivo no existe, touch no lo crea. Simplemente no hace nada y no muestra error. 
+  - `touch -a` → Actualiza solo el tiempo de acceso.
+  - `touch -m` → Actualiza solo el tiempo de modificación.
+  - `touch -d "YYYY-MM-DD HH:MM:SS" archivo.txt` → Establece una fecha y hora específicas.
+
+**También puedes crear múltiples archivos a la vez:**
+
+- `touch archivo1.txt archivo2.txt` → Crea archivo1.txt y archivo2.txt.
+- `touch archivo{1..5}.txt` → Crea archivo1.txt, archivo2.txt, ..., archivo5.txt.
+
+**También se pueden crear archivos directamente desde el editor de texto.**
+
+- `nano archivo.txt` → Abre nano para crear/editar archivo.txt. Si no existe, lo crea.
+- `vim archivo.txt` → Abre vim para crear/editar archivo.txt. Si no existe, lo crea.
+
+## Comandos básicos para copiar, mover/renombrar y borrar.
+
+- `cp` → Copia archivos y directorios.
+  - `cp archivo1 archivo2` → Copia archivo1 a archivo2.
+  - `cp -r dir1 dir2` → Copia el directorio dir1 y su contenido a dir2 (recursivo).
+  - `cp -i` → Modo interactivo, pregunta antes de sobrescribir.
+  - `cp -u` → Copia solo si el origen es más nuevo que el destino o si el destino no existe.
+  - `cp -v` → Muestra los archivos a medida que se copian (verbose).
+  - `cp -a` → modo archive: preserva atributos (permisos, timestamps, symlinks), equivalente a -dR --preserve=all.
+  - `cp -n` → No sobrescribe archivos existentes.
+- `mv` → Mueve o renombra archivos y directorios.
+  - `mv archivo1 archivo2` → Renombra archivo1 a archivo2.
+  - `mv dir1 dir2` → Mueve dir1 a dir2.
+  - `mv -i` → Modo interactivo, pregunta antes de sobrescribir.
+  - `mv -v` → Muestra los archivos a medida que se mueven (verbose).
+- `rm` → Elimina archivos y directorios.
+  - `rm archivo` → Elimina el archivo especificado.
+  - `rm -r dir` → Elimina el directorio y su contenido (recursivo).
+  - `rm -i` → Modo interactivo, pregunta antes de eliminar.
+  - `rm -f` → Fuerza la eliminación sin preguntar (force).
+  - `rm -v` → Muestra los archivos a medida que se eliminan (verbose).
+- `rmdir` → Elimina directorios vacíos.
+  - `rmdir directorio` → Elimina el directorio si está vacío.
+  - `rmdir -p /ruta/completa/directorio` → Elimina el directorio y sus padres si están vacíos.
+
+<br><br>
+
+# Instalación de software y gestores de paquetes
+
+La gestión de software en Linux se realiza principalmente a través de **gestores de paquetes**, que automatizan la instalación, actualización y eliminación de programas. Cada distribución tiene su propio ecosistema de paquetes y herramientas.
+
+## ¿Qué es un paquete?
+
+Un **paquete** es un archivo que contiene:
+- Los binarios del programa
+- Archivos de configuración
+- Documentación
+- Scripts de instalación/desinstalación  
+- **Metadatos**: dependencias, versión, descripción, etc.
+
+Los paquetes resuelven automáticamente las **dependencias** (librerías y otros programas necesarios).
+
+## Gestores de paquetes por distribución
+
+### Debian/Ubuntu - APT (Advanced Package Tool)
+
+**Comando principal:** `apt` (versión moderna) y `apt-get` (versión clásica)
+
+**Archivos de configuración:**
+
+- `/etc/apt/sources.list` → repositorios principales
+- `/etc/apt/sources.list.d/` → repositorios adicionales
+
+**Comandos esenciales:**
+
+```bash
+# Actualizar lista de paquetes disponibles
+sudo apt update
+
+# Actualizar todos los paquetes instalados
+sudo apt upgrade
+
+# Actualizar distribución (upgrade + manejo de dependencias complejas)
+sudo apt dist-upgrade
+
+# Instalar un paquete
+sudo apt install nombre_paquete
+
+# Instalar múltiples paquetes
+sudo apt install paquete1 paquete2 paquete3
+
+# Desinstalar un paquete (mantiene configuración)
+sudo apt remove nombre_paquete
+
+# Desinstalar completamente (incluye configuración)
+sudo apt purge nombre_paquete
+
+# Buscar paquetes
+apt search palabra_clave
+
+# Mostrar información de un paquete
+apt show nombre_paquete
+
+# Listar paquetes instalados
+apt list --installed
+
+# Limpiar caché de paquetes descargados
+sudo apt autoclean
+
+# Eliminar paquetes huérfanos (no necesarios)
+sudo apt autoremove
+```
+
+**Gestión de repositorios:**
+
+```bash
+# Añadir repositorio PPA (Personal Package Archive)
+sudo add-apt-repository ppa:usuario/repositorio
+
+# Eliminar repositorio PPA
+sudo add-apt-repository --remove ppa:usuario/repositorio
+
+# Añadir clave GPG de repositorio. La clave asegura la autenticidad de los paquetes.
+wget -qO - https://url-del-repositorio/key.gpg | sudo apt-key add -
+```
+
+### RHEL/CentOS/Rocky Linux - YUM/DNF
+
+**YUM** (Yellowdog Updater Modified) en versiones antiguas, **DNF** (Dandified YUM) en versiones modernas.
+
+**Archivos de configuración:**
+
+- `/etc/yum.repos.d/` → definición de repositorios
+- `/etc/dnf/dnf.conf` → configuración principal (DNF)
+
+**Comandos esenciales DNF:**
+
+```bash
+# Actualizar metadatos de repositorios
+sudo dnf check-update
+
+# Actualizar todos los paquetes
+sudo dnf update
+
+# Instalar un paquete
+sudo dnf install nombre_paquete
+
+# Desinstalar un paquete
+sudo dnf remove nombre_paquete
+
+# Buscar paquetes
+dnf search palabra_clave
+
+# Mostrar información de un paquete
+dnf info nombre_paquete
+
+# Listar paquetes instalados
+dnf list installed
+
+# Listar repositorios habilitados
+dnf repolist
+
+# Limpiar caché
+sudo dnf clean all
+
+# Mostrar historial de transacciones
+dnf history
+
+# Deshacer una transacción
+sudo dnf history undo ID
+```
+
+**Comandos YUM (sistemas antiguos):**
+
+```bash
+# Equivalentes a DNF pero con sintaxis yum
+sudo yum update
+sudo yum install nombre_paquete
+sudo yum remove nombre_paquete
+yum search palabra_clave
+```
+
+### openSUSE - Zypper
+
+**Comando principal:** `zypper`
+
+**Comandos esenciales:**
+
+```bash
+# Actualizar metadatos de repositorios
+sudo zypper refresh
+
+# Actualizar sistema
+sudo zypper update
+
+# Instalar paquete
+sudo zypper install nombre_paquete
+
+# Desinstalar paquete
+sudo zypper remove nombre_paquete
+
+# Buscar paquetes
+zypper search palabra_clave
+
+# Mostrar información de paquete
+zypper info nombre_paquete
+
+# Listar repositorios
+zypper repos
+
+# Añadir repositorio
+sudo zypper addrepo URL_repositorio nombre_alias
+```
+
+### Arch Linux - Pacman
+
+**Comando principal:** `pacman`
+
+**Comandos esenciales:**
+
+```bash
+# Actualizar sistema completo
+sudo pacman -Syu
+
+# Instalar paquete
+sudo pacman -S nombre_paquete
+
+# Desinstalar paquete
+sudo pacman -R nombre_paquete
+
+# Desinstalar con dependencias huérfanas
+sudo pacman -Rs nombre_paquete
+
+# Buscar paquetes
+pacman -Ss palabra_clave
+
+# Buscar paquetes instalados
+pacman -Qs palabra_clave
+
+# Mostrar información de paquete
+pacman -Si nombre_paquete
+
+# Limpiar caché
+sudo pacman -Sc
+```
+
+## Gestores de paquetes universales
+
+### Snap (Canonical)
+
+Paquetes autocontenidos que funcionan en múltiples distribuciones.
+
+```bash
+# Instalar snap si no está disponible (Ubuntu lo tiene por defecto)
+sudo apt install snapd
+
+# Instalar paquete snap
+sudo snap install nombre_paquete
+
+# Listar snaps instalados
+snap list
+
+# Actualizar todos los snaps
+sudo snap refresh
+
+# Desinstalar snap
+sudo snap remove nombre_paquete
+
+# Buscar snaps
+snap find palabra_clave
+```
+
+### Flatpak
+
+Otro sistema de paquetes universales, muy usado en entornos desktop.
+
+```bash
+# Instalar flatpak
+sudo apt install flatpak  # Debian/Ubuntu
+sudo dnf install flatpak  # RHEL/Fedora
+
+# Añadir repositorio Flathub
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# Instalar aplicación
+flatpak install nombre_aplicacion
+
+# Ejecutar aplicación
+flatpak run com.ejemplo.aplicacion
+
+# Listar aplicaciones instaladas
+flatpak list
+
+# Actualizar aplicaciones
+flatpak update
+```
+
+### AppImage
+
+Paquetes portátiles que no requieren instalación.
+
+```bash
+# Descargar AppImage
+wget https://github.com/proyecto/releases/app.AppImage
+
+# Dar permisos de ejecución
+chmod +x app.AppImage
+
+# Ejecutar
+./app.AppImage
+```
+
+## Compilación desde código fuente
+
+Cuando un programa no está disponible en los repositorios de tu distribución, o necesitas una versión más reciente, puedes compilarlo directamente desde su código fuente.
+
+Esto significa convertir el código (C, C++, etc.) en binarios ejecutables adaptados a tu sistema.
+
+### Conceptos básicos
+
+La compilación es el proceso de transformar el código fuente en ejecutables.
+
+Normalmente sigue tres fases:
+
+- Configurar → preparar el entorno y detectar dependencias.
+
+- Compilar → traducir el código fuente a binarios.
+
+- Instalar → copiar los binarios y archivos a las rutas del sistema.
+
+### Proceso básico
+
+```bash
+# 1. Instalar herramientas de compilación
+sudo apt install build-essential  # Debian/Ubuntu
+sudo dnf groupinstall "Development Tools"  # RHEL/Fedora
+
+# 2. Descargar código fuente
+wget https://proyecto.org/codigo.tar.gz
+tar -xzf codigo.tar.gz
+cd codigo/
+
+# 3. Configurar compilación. El script configure analiza tu sistema:
+# Verifica que tengas las librerías necesarias.
+# Detecta la arquitectura (x86_64, ARM, etc.).
+# Genera el archivo Makefile, donde se definen las reglas de compilación.
+./configure --prefix=/usr/local
+
+# 4. Compilar. 
+# Make lee el archivo Makefile generado y ejecuta las instrucciones para construir los binarios.
+make
+
+# 5. Instalar. 
+# Este paso copia los binarios y archivos a las rutas del sistema.
+sudo make install
+```
+
+### Gestión con checkinstall
+
+`checkinstall` crea un paquete a partir de `make install`, facilitando la desinstalación posterior.
+
+```bash
+# Instalar checkinstall
+sudo apt install checkinstall
+
+# Usar en lugar de make install
+sudo checkinstall
+```
+
+## Buenas prácticas
+
+### Seguridad
+
+- **Siempre actualiza** antes de instalar: `sudo apt update && sudo apt install paquete`
+- **Verifica las fuentes**: usa repositorios oficiales cuando sea posible
+- **Revisa dependencias** antes de instalar software de terceros
+
+### Mantenimiento
+
+- **Limpia regularmente** el caché de paquetes
+- **Elimina paquetes huérfanos** periódicamente
+- **Mantén el sistema actualizado** con updates regulares
+
+### Troubleshooting común
+
+```bash
+# Reparar dependencias rotas (Debian/Ubuntu)
+sudo apt --fix-broken install
+
+# Reconfigurar paquetes
+sudo dpkg-reconfigure nombre_paquete
+
+# Forzar instalación de dependencias
+sudo apt install -f
+
+# Ver qué paquetes están bloqueando una actualización
+sudo apt list --upgradable
+```
+
+## Comparación de comandos comunes
+
+| Acción | Debian/Ubuntu | RHEL/CentOS | openSUSE | Arch |
+|--------|---------------|-------------|----------|------|
+| Actualizar lista | `apt update` | `dnf check-update` | `zypper refresh` | `pacman -Sy` |
+| Actualizar sistema | `apt upgrade` | `dnf update` | `zypper update` | `pacman -Syu` |
+| Instalar | `apt install` | `dnf install` | `zypper install` | `pacman -S` |
+| Desinstalar | `apt remove` | `dnf remove` | `zypper remove` | `pacman -R` |
+| Buscar | `apt search` | `dnf search` | `zypper search` | `pacman -Ss` |
+| Info | `apt show` | `dnf info` | `zypper info` | `pacman -Si` |
+
+<br><br>
