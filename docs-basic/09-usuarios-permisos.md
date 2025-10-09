@@ -235,6 +235,13 @@ ls -l
 
 - Si ves una `t` en lugar de `x` en los permisos de otros (o), indica que el sticky bit está activado.
 
+### Archivos relacionados útiles
+
+- `/etc/login.defs` -> Parámetros por defecto (UID inicial, expiración, etc.).
+- `/etc/default/useradd` -> Configuración global de useradd.
+- `/etc/skel/` -> Plantilla del contenido inicial del directorio /home de nuevos usuarios.
+- `/etc/security/limits.conf` -> Límites de recursos (CPU, RAM, procesos).
+
 ### Ver usuarios conectados
 
 ```bash

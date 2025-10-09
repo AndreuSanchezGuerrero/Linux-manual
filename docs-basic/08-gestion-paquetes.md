@@ -13,6 +13,25 @@ Un **paquete** es un archivo que contiene:
 
 Los paquetes resuelven automáticamente las **dependencias** (librerías y otros programas necesarios).
 
+## Comprobar si el software ya está instalado
+
+Antes de instalar un programa, es buena práctica verificar si ya está instalado en el sistema y en qué versión.
+
+Hay varias formas de hacerlo:
+
+```bash
+# Comprobar si el binario está en el PATH:
+which nombre_programa
+
+# Alternativa a which:
+# whereis busca en una lista de directorios estándar, no depende del PATH.
+# Muestra dónde están el binario, sus páginas man y, a veces, el código fuente.
+whereis nombre_programa
+
+# Si conoces el nombre del paquete, puedes verificar si está instalado y en qué versión:
+dpkg -l | grep nombre_paquete  # Debian/Ubuntu
+```
+
 ## Gestores de paquetes por distribución
 
 ### Debian/Ubuntu - APT (Advanced Package Tool)
